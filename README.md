@@ -23,7 +23,9 @@ with only a few exceptions.
 Download the course. This can be done automatically by the included
 helper script:
 
+```bash
   ./download\_lessons.sh
+```
 
 It will download episodes 1-50.
 
@@ -40,8 +42,10 @@ And finally, the conversion can be done by using another helper script:
 This will leave the original files untouched, but create two new
 files for each episode:
 
+```
   lektion01\_out.wav
   lektion01.stdout
+```
 
 The first file is the resulting audo file and the second one
 is a file containing the decoded text.
