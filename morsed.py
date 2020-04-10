@@ -95,7 +95,7 @@ def read_wav(file):
 #  print(sample)
 #  plot([sample])
   sample_abs = np.absolute(sample)
-  write('sample.wav', Fs, sample)
+#  write('sample.wav', Fs, sample)
   N = round(0.0009 * Fs)
 #  conv = np.convolve(sample_abs, np.ones((N,))/N, mode='same')
   # Really large chunks of data seems to crash the rolling max calculation,
@@ -191,28 +191,16 @@ def split_str(str):
 def gen_morse_c(Fs, f, sender, c):
   out = []
   if c == ' ':
-    out += gen_word_spc(sender["timing"])
+    out += gen_spc(sender["timing"], 'word_spc')
   elif c == '':
-    out += gen_char_spc(sender["timing"])
+    out += gen_spc(sender["timing"], 'char_spc')
   else:
     sym = letter_to_sym(c)
     out += gen_morse_syms(Fs, f, sender, sym)
   return out
 
-def gen_word_spc(timing):
-  out = int(timing['word_spc']) * [0]
-  return out
-
-def gen_char_spc(timing):
-  out = int(timing['char_spc']) * [0]
-  return out
-
-def gen_sym_spc(timing):
-  out = int(timing['sym_spc']) * [0]
-  return out
-
-def gen_longsym_spc(timing):
-  out = int(timing['longsym_spc']) * [0]
+def gen_spc(timing, type):
+  out = int(timing[type]) * [0]
   return out
 
 def gen_morse_syms(Fs, f, sender, sym):
@@ -221,14 +209,13 @@ def gen_morse_syms(Fs, f, sender, sym):
   timing = sender["timing"]
   for s in sym:
     if not first and s in ".-":
-      out += gen_sym_spc(timing)
+      out += gen_spc(timing, 'sym_spc')
 
-    if s == '.':
-      out += gen_tone(Fs, f, timing['dit'], sender["tone"])
-    elif s == '-':
-      out += gen_tone(Fs, f, timing['dah'], sender["tone"])
+    if s in '.-':
+      name = {'.': 'dit', '-': 'dah'}
+      out += gen_tone(Fs, f, timing[name[s]], sender["tone"])
     elif s == '>':
-      out += gen_longsym_spc(timing)
+      out += gen_spc(timing, 'longsym_spc')
     first = 0
   return out
 
