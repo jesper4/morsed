@@ -58,3 +58,16 @@ is a file containing the decoded text.
 Use the morsed.py script and provide the input .wav file to it.
 Use the --help option to the script to find the available options
 and arguments to be used with the script.
+
+## Pre-requisites
+The script uses a few different python libraries, which might
+therefore need to be installed before running the script.
+These libraries are however commonly available in the
+various Linux package systems.
+
+```
+numpy
+matplotlib
+pandas
+scipy
+```
