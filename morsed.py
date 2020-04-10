@@ -1,5 +1,22 @@
 #!/usr/bin/env -S python3 -u
 
+
+# morsed - Re-codes morse code in an audio file
+# Copyright (C) 2020 Jesper Dahlberg
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -65,6 +82,8 @@ def convert_file(args):
 def read_wav(file):
   Fs, data = read(file)
   sample = data
+#  print('len(data)=' + str(len(data)))
+#  sample = data[58955375 - 100000:]
 #  sample = data[100000:10000000]
 #  sample = data[100000:500000]
 #  sample = data[290000:315000]
@@ -94,7 +113,7 @@ def read_wav(file):
   sample_bin = [1 if int(x) > 10000 else 0 for x in sample_max]
   points = trigger(sample_bin, N)
   content = decode(points)
-  print(content)
+#  print(content)
   return sample, content, Fs
 
 def write_wav(file, Fs, f, content, sample, sender):
@@ -285,6 +304,8 @@ def trigger(data, N, start_val = 0, start_index = 0):
       prev_val = sample
       prev_index = new_index
     index += 1
+  if index - 1 != prev_index:
+    points.append((prev_index, start_index + index - 1, -1, 'other', prev_val))
 #  print_sym_stats(stats)
   return points
 
