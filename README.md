@@ -71,3 +71,10 @@ matplotlib
 pandas
 scipy
 ```
+
+The helper scripts also use some common tools, like:
+
+```
+wget
+lame
+```
