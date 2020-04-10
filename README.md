@@ -24,7 +24,7 @@ Download the course. This can be done automatically by the included
 helper script:
 
 ```bash
-  ./download\_lessons.sh
+  ./download_lessons.sh
 ```
 
 It will download episodes 1-50.
@@ -33,17 +33,21 @@ The morsed.py script can only read .wav files, so the downloaded
 .mp3 files need to be converted to .wav files first. There is another
 helper script which uses the lame program for the conversion:
 
-  ./mp3\_to\_wav.sh
+```bash
+  ./mp3_to_wav.sh
+```
 
 And finally, the conversion can be done by using another helper script:
 
-  ./morsed\_all.sh
+```bash
+  ./morsed_all.sh
+```
 
 This will leave the original files untouched, but create two new
 files for each episode:
 
 ```
-  lektion01\_out.wav
+  lektion01_out.wav
   lektion01.stdout
 ```
 
