@@ -55,9 +55,9 @@ def get_args():
 
 def convert_file(args):
   file = args.file[0]
-  file_out = file.replace(".wav", "_out.wav")
+  file_out = file.replace(".wav", "_morsed.wav")
   if file_out == file:
-    print("The file need to be a .wav file")
+    print("The file need to be a .wav file and have a .wav suffix")
     exit(1)
 
   print('Will re-code with symbol speed ' + str(args.speed_sym) +
@@ -96,7 +96,7 @@ def read_wav(file):
 #  plot([sample])
   sample_abs = np.absolute(sample)
   write('sample.wav', Fs, sample)
-  N = 20
+  N = round(0.0009 * Fs)
 #  conv = np.convolve(sample_abs, np.ones((N,))/N, mode='same')
   # Really large chunks of data seems to crash the rolling max calculation,
   # so split it in smaller parts

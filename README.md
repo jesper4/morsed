@@ -48,8 +48,8 @@ This will leave the original files untouched, but create two new
 files for each episode:
 
 ```
-lektion01_out.wav
-lektion01.stdout
+lektion01_morsed.wav
+lektion01_morsed.txt
 ```
 
 The first file is the resulting audo file and the second one
