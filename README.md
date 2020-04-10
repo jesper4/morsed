@@ -53,3 +53,8 @@ files for each episode:
 
 The first file is the resulting audo file and the second one
 is a file containing the decoded text.
+
+## Re-coding an individual audio file
+Use the morsed.py script and provide the input .wav file to it.
+Use the --help option to the script to find the available options
+and arguments to be used with the script.
