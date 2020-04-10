@@ -12,8 +12,9 @@ to the settings provided to the script:
  * Tone frequency
  * Tone amplitude
 
-It is so far limited to handle only a few lessons of the [morse course
-by SK4SQ](http://www.sk4sq.net/cwkurs.shtm).
+The decoder is so far not very good and requires very accurate code with
+a specific timing, so it is limited to handle only a few lessons of the
+[morse course by SK4SQ](http://www.sk4sq.net/cwkurs.shtm).
 
 Lessons 1-50, except for 35 and 36, are expected to be handle nicely,
 with only a few exceptions.
