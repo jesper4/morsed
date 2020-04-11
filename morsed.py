@@ -65,7 +65,13 @@ def convert_file(args):
         ', word speed ' + str(args.speed_word))
 
   print('Reading file ' + file)
-  sample, content, Fs = read_wav(file)
+  decoder = {'rolling_max_len': 0.0009,
+             'level_threshold': 10000,
+             'deviation': 0.2,
+             'sym_unit_s': 1520 / 22050,
+             'char_len_s': 25450 / 22050,
+             'word_len_s': 52400 / 22050}
+  sample, content, Fs = read_wav(file, decoder)
 
   print_content(content)
 
@@ -79,7 +85,7 @@ def convert_file(args):
   sender = {"timing": timing, "tone": tone}
   write_wav(file_out, Fs, f, content, sample, sender)
 
-def read_wav(file):
+def read_wav(file, decoder):
   Fs, data = read(file)
   sample = data
 #  print('len(data)=' + str(len(data)))
@@ -96,7 +102,7 @@ def read_wav(file):
 #  plot([sample])
   sample_abs = np.absolute(sample)
 #  write('sample.wav', Fs, sample)
-  N = round(0.0009 * Fs)
+  N = round(decoder['rolling_max_len'] * Fs)
 #  conv = np.convolve(sample_abs, np.ones((N,))/N, mode='same')
   # Really large chunks of data seems to crash the rolling max calculation,
   # so split it in smaller parts
@@ -110,8 +116,11 @@ def read_wav(file):
       end = len(sample_abs)
     sample_max += pd.Series(sample_abs[start:end]).rolling(N).max().dropna().tolist()
     offset += M - (N - 1)
-  sample_bin = [1 if int(x) > 10000 else 0 for x in sample_max]
-  points = trigger(sample_bin, N)
+  sample_bin = [1 if int(x) > decoder['level_threshold'] else 0 for x in sample_max]
+  decoder['sym_unit'] = round(decoder['sym_unit_s'] * Fs)
+  decoder['char_len'] = round(decoder['char_len_s'] * Fs)
+  decoder['word_len'] = round(decoder['word_len_s'] * Fs)
+  points = trigger(sample_bin, N, decoder)
   content = decode(points)
 #  print(content)
   return sample, content, Fs
@@ -265,7 +274,7 @@ def calc_timing(fs, rate):
           "char_spc": smpl_char_spc,
           "word_spc": smpl_word_spc}
 
-def trigger(data, N, start_val = 0, start_index = 0):
+def trigger(data, N, decoder, start_val = 0, start_index = 0):
   prev_val = start_val
   prev_index = start_index
   points = []
@@ -279,7 +288,7 @@ def trigger(data, N, start_val = 0, start_index = 0):
         length += N
       else:
         length -= N
-      dd = ditdah(length, prev_val)
+      dd = ditdah(length, prev_val, decoder)
       if dd not in stats:
         stats[dd] = []
       stats[dd].append(length)
@@ -313,20 +322,16 @@ def plot(list):
   plt.title('Waveform')
   plt.show()
 
-def ditdah(length, sample):
-  deviation = 0.2
-  sym_unit = 1420 # Avsn 15
-  sym_unit = 1520 # Avsn 25
+def ditdah(length, sample, decoder):
+  deviation = decoder['deviation']
+  sym_unit = decoder['sym_unit']
   len_dit = sym_unit
   len_dah = 3 * sym_unit
   len_sym = sym_unit
-  len_longsym = 3 * sym_unit # Should it really be like this??
+  len_longsym = 3 * sym_unit
 
-  char_unit = 80 / 30 * sym_unit
-  len_char = 3 * char_unit
-  len_char = 25450 # Don't understand where they get this from
-  len_word = 7 * char_unit
-  len_word = 52400 # Don't understand where they get this from
+  len_char = decoder['char_len']
+  len_word = decoder['word_len']
   if sample == 1:
     if around(len_dit, deviation, length):
       return '.'
